@@ -206,7 +206,6 @@ button:hover {
     margin-top: 12px;
 }
 
-/* ===== Calculadora ===== */
 .calculator {
     position: fixed;
     bottom: 20px;
@@ -291,7 +290,6 @@ button:hover {
     background-color: #e07b34;
 }
 
-/* ===== BLOQUEIO ===== */
 .resultado-bloqueado {
     filter: blur(5px);
     user-select: none;
