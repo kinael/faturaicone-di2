@@ -171,7 +171,7 @@ function calcularValores() {
     const aviso = document.createElement('p');
     aviso.id = 'avisoAcesso';
     aviso.className = 'aviso-acesso';
-    aviso.textContent = 'Este é apenas um exemplo. Para obter acesso completo ao sistema, entre em contato pelo e-mail wrubly@gmail.com e solicite informações sobre valores.';
+    aviso.textContent = 'Este é apenas um exemplo! Para obter acesso completo ao sistema, entre em contato pelo e-mail wrubly@outlook.com e solicite informações sobre valores.';
     document.querySelector('.container').appendChild(aviso);
   }
 }
