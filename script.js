@@ -1,8 +1,6 @@
-// ===== Estado =====
 var modoEscuroAtivado = false;
 var ultimoCalculo = null;
 
-// ===== Calculadora flutuante =====
 let currentInput = '';
 let operator = null;
 let firstOperand = null;
@@ -49,7 +47,6 @@ function toggleCalculator() {
   calculator.style.display = isVisible ? 'none' : 'block';
 }
 
-// ===== Modais =====
 function exibirModalSobre() { document.getElementById('modalSobre').style.display = 'block'; }
 function fecharModalSobre() { document.getElementById('modalSobre').style.display = 'none'; }
 
@@ -61,7 +58,6 @@ function exibirModal() {
 }
 function fecharModal() { document.getElementById('modal').style.display = 'none'; }
 
-// ===== Persistência do “Último cálculo” (sempre mascarado) =====
 function carregarUltimoCalculo() {
   var ultimoCalculoArmazenado = localStorage.getItem('ultimoCalculo_travado_DI');
   if (ultimoCalculoArmazenado !== null) {
@@ -77,29 +73,23 @@ function exibirResultadoAnterior() {
   if (ultimoCalculo) document.getElementById('resultadoAnterior').innerHTML = ultimoCalculo;
 }
 
-// ===== Bloqueios / Máscaras =====
 const MASCARA_VALOR = 'XXX,XXX';
 
 function mascararBlocoResultados(htmlReal) {
-  // Substitui quaisquer números por MASCARA_VALOR (exibição)
-  // e aplica classes para blur e bloqueio de interação
   const wrapper = document.createElement('div');
   wrapper.innerHTML = htmlReal;
 
-  // força os números exibidos a ficarem mascarados
   wrapper.querySelectorAll('.resultado-detalhe').forEach(p => {
     const label = p.querySelector('b') ? p.querySelector('b').outerHTML : '';
     p.innerHTML = `${label} ${MASCARA_VALOR}`;
   });
 
-  // aplica blur e bloqueio
   wrapper.querySelectorAll('.resultado-item, .resultado-detalhes, .resultado-detalhe, .fornecedor-nome')
     .forEach(el => el.classList.add('resultado-bloqueado'));
 
   return wrapper.innerHTML;
 }
 
-// ===== Validações =====
 function validarInformacoes() {
   const toNumber = id => parseFloat(document.getElementById(id).value.replace(/\./g, '').replace(',', '.'));
   var valorPIS = toNumber('valorPIS');
@@ -128,7 +118,6 @@ function validarFornecedores() {
   return true;
 }
 
-// ===== Cálculo (com travamento na exibição) =====
 function calcularValores() {
   if (!(validarInformacoes() && validarFornecedores())) return;
 
@@ -147,7 +136,6 @@ function calcularValores() {
     distribuicoes.push({ nome, percentual });
   }
 
-  // Monta HTML "real" (não exibido ao usuário)
   var htmlReal = '';
   for (var j = 0; j < distribuicoes.length; j++) {
     var d = distribuicoes[j];
@@ -157,7 +145,6 @@ function calcularValores() {
     var numerario = 999;
     var variacao = 999;
 
-    // formata (apenas para consistência do layout interno)
     const fmt = n => n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     htmlReal += `
@@ -173,16 +160,13 @@ function calcularValores() {
       </div>`;
   }
 
-  // Mascara e aplica blur para exibição/banco do "último cálculo"
   const htmlMascarado = mascararBlocoResultados(htmlReal);
   document.getElementById('resultado').innerHTML = htmlMascarado;
   salvarUltimoCalculo(htmlMascarado);
 
-  // Garante que o botão de exportar continue oculto
   const btnExp = document.getElementById('exportarExcelButton');
   btnExp.style.display = 'none';
 
-  // Mostra aviso de acesso completo
   if (!document.getElementById('avisoAcesso')) {
     const aviso = document.createElement('p');
     aviso.id = 'avisoAcesso';
@@ -192,13 +176,11 @@ function calcularValores() {
   }
 }
 
-// ===== Exportação bloqueada =====
 function exportarParaExcel() {
   alert('Recurso disponível apenas na versão completa. Para liberar o exportador, entre em contato: wrubly@gmail.com');
   return;
 }
 
-// ===== Limpar =====
 function limparCampos() {
   ['valorPIS','valorCOFINS','valorSISCOMEX','valorNumerario','valorVariacao'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('quantidadeFornecedores').value = '0';
@@ -210,7 +192,6 @@ function limparCampos() {
   if (aviso) aviso.remove();
 }
 
-// ===== Geração dinâmica dos fornecedores =====
 document.getElementById('quantidadeFornecedores').addEventListener('change', function () {
   var fornecedoresFields = document.getElementById('fornecedoresFields');
   fornecedoresFields.innerHTML = '';
@@ -231,7 +212,6 @@ document.getElementById('quantidadeFornecedores').addEventListener('change', fun
   fornecedoresFields.style.display = qtd > 0 ? 'block' : 'none';
 });
 
-// ===== Dark Mode =====
 function carregarModoEscuro() {
   var modoEscuroSalvo = localStorage.getItem('modoEscuro');
   if (modoEscuroSalvo !== null) {
@@ -252,7 +232,6 @@ function alternarModo() {
   aplicarModoEscuro();
 }
 
-// ===== Init =====
 document.addEventListener('DOMContentLoaded', () => {
   carregarModoEscuro();
   carregarUltimoCalculo();
