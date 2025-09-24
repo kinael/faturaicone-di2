@@ -9,6 +9,11 @@ body {
     animation: fadeIn 1s ease-out;
 }
 
+.aviso-acesso {
+  font-size: 18px; /* ou 20px se quiser maior */
+}
+
+
 #sobreBtn {
     position: fixed;
     bottom: 12px;
