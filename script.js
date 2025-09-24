@@ -1,3 +1,25 @@
+// ======= CONFIG: Web App do Google Apps Script =======
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwz3TuUjHEvk_68Rdm05t8_vex7tOIHxoynyf09tuYUU_ekcRgBpJEIN5Zl8qb6Bpwg/exec"; // ex.: https://script.google.com/macros/s/AKfycb.../exec
+
+// ======= Enviar email via GAS =======
+function enviarEmailRegistroConsulta(payloadExtra = {}) {
+  const payload = {
+    subject: "Novo registro de consulta!",
+    bodyText: "Novo registro de consulta!",
+    bodyHtml: "<p><b>Novo registro de consulta!</b></p>",
+    ...payloadExtra
+  };
+
+  // no-cors evita erro de CORS; o envio acontece mesmo sem ler a resposta
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(() => console.log(""));
+}
+
+// ==================== Seu código (com pequenas adições) ====================
 var modoEscuroAtivado = false;
 var ultimoCalculo = null;
 
@@ -164,8 +186,22 @@ function calcularValores() {
   document.getElementById('resultado').innerHTML = htmlMascarado;
   salvarUltimoCalculo(htmlMascarado);
 
+  // === DISPARO DO EMAIL (AQUI) ===
+  try {
+    // Se quiser, envie também um resumo básico junto:
+    const resumo = {
+      fornecedores: distribuicoes.map(d => d.nome),
+      qtd: distribuicoes.length,
+      quando: new Date().toLocaleString('pt-BR')
+    };
+    enviarEmailRegistroConsulta({ resumo });
+  } catch (_) {
+    // segue normal mesmo se falhar (por segurança)
+  }
+  // === FIM DISPARO DO EMAIL ===
+
   const btnExp = document.getElementById('exportarExcelButton');
-  btnExp.style.display = 'none';
+  if (btnExp) btnExp.style.display = 'none';
 
   if (!document.getElementById('avisoAcesso')) {
     const aviso = document.createElement('p');
